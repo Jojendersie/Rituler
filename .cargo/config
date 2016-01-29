@@ -1,3 +1,3 @@
 [target.x86_64-pc-windows-msvc.SDL2]
-rustc-link-search = ["deps/sdl2"]
-rustc-link-lib = ["sdl2"]
+rustc-link-search = ["deps/sdl2", "deps/sdl2_image"]
+rustc-link-lib = ["SDL2", "SDL2_image"]

@@ -5,4 +5,5 @@ version = "0.0.2"
 authors = [ "Johannes Jendersie", "Robert Jendersie" ]
 
 [dependencies]
-sdl2 = "0.12"
+sdl2 = "0.13"
+sdl2_image = "0.7"
