@@ -1,2 +1,1 @@
-rustc src/ritulermain.rs
-ritulermain.exe
+cargo run
