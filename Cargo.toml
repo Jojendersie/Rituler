@@ -7,3 +7,4 @@ authors = [ "Johannes Jendersie", "Robert Jendersie" ]
 [dependencies]
 sdl2 = "0.13"
 sdl2_image = "0.7"
+time = "0.1"

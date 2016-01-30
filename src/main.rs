@@ -1,5 +1,6 @@
 extern crate sdl2;
 extern crate sdl2_image;
+extern crate time;
 
 //includes
 mod constants;
@@ -53,6 +54,8 @@ fn main() {
 	world.add_actor(actor2);
 	
 	while unsafe{running} {
+		let mut time = time::precise_time_ns();
+	
 		let mut event_pump = sdl_context.event_pump().unwrap();
 		
 		// Handle all sdl events.
@@ -67,5 +70,10 @@ fn main() {
 		renderer.clear();
 		(&world as &drawable::Drawable).draw(&mut renderer, &cam_pos);
 		renderer.present();
+		
+		//cap frame time
+		time = time::precise_time_ns() - time;
+		//1666666
+		if time < 1666666 { std::thread::sleep(std::time::Duration::from_millis((1666666 - time)/100000));}
 	}
 }
