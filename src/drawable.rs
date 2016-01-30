@@ -9,7 +9,7 @@ pub trait Drawable {
     fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point);
 }
 
-pub struct Actor<'a>
+pub struct Sprite<'a>
 {
 	pub m_location : math::Vector,
 	pub m_texture : &'a sdl2::render::Texture,
@@ -17,7 +17,7 @@ pub struct Actor<'a>
 	pub m_sprite_size : (u32, u32),
 }
 
-impl <'a> Drawable for Actor<'a>
+impl <'a> Drawable for Sprite<'a>
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point) {
 		let hsize_x = (self.m_sprite_size.0/2) as i32;
@@ -27,10 +27,10 @@ impl <'a> Drawable for Actor<'a>
 	}
 }
 
-impl<'a> Actor<'a> {
-	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture) -> Actor {
+impl<'a> Sprite<'a> {
+	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture) -> Sprite {
 		let tex_query = _texture.query();
-		Actor {
+		Sprite {
 			m_location: _vec,
 			m_texture: _texture,
 			m_angle: 0.0,

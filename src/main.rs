@@ -4,7 +4,7 @@ extern crate sdl2_image;
 //includes
 mod constants;
 mod math;
-mod actor;
+mod drawable;
 mod world;
 mod playerinput;
 
@@ -45,8 +45,8 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/grass.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
 	//test
-	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0]);
-	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1] );
+	let actor = drawable::Sprite::new( math::Vector{x : 10.0, y : 10.0},  &textures[0]);
+	let actor2 = drawable::Sprite::new( math::Vector{x : 0.0, y : 0.0}, &textures[1] );
 	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
 	world.add_actor(actor);
 	world.add_actor(actor2);
@@ -64,7 +64,7 @@ fn main() {
 		let cam_pos = Point::new(world.m_game_objects[0].m_location.x as i32 - WIN_WIDTH/2, world.m_game_objects[0].m_location.y as i32 - WIN_HEIGHT/2);
 		
 		renderer.clear();
-		(&world as &actor::Drawable).draw(&mut renderer, &cam_pos);
+		(&world as &drawable::Drawable).draw(&mut renderer, &cam_pos);
 		renderer.present();
 	}
 }

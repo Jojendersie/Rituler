@@ -1,12 +1,12 @@
 extern crate sdl2;
 
-use actor;
+use drawable;
 use std::f32;
 use sdl2::keyboard::Scancode;
 use math;
 use constants::*;
 
-pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard::KeyboardState, _player: &mut actor::Actor) {
+pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard::KeyboardState, _player: &mut drawable::Sprite) {
 	
 	// The player is always in the middle of the screen -> rotation depends only on window setting
 	let (_, mx, my) = _sdl_context.mouse().mouse_state();

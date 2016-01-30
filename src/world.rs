@@ -1,31 +1,31 @@
 extern crate sdl2;
 extern crate sdl2_image;
 
-use actor;
+use drawable;
 use math;
 use sdl2::rect::{Point};
 
 pub struct World<'a>
 {
-	pub m_ground_tiles : Vec< actor::Actor<'a> >,
-	pub m_game_objects : Vec< actor::Actor<'a> >,
+	pub m_ground_tiles : Vec< drawable::Sprite<'a> >,
+	pub m_game_objects : Vec< drawable::Sprite<'a> >,
 }
 
-impl <'a> actor::Drawable for World<'a>
+impl <'a> drawable::Drawable for World<'a>
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point){
 		for act in &self.m_ground_tiles{
-			(act as &actor::Drawable).draw(_renderer, &_cam_pos);
+			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
 		for act in &self.m_game_objects{
-			(act as &actor::Drawable).draw(_renderer, &_cam_pos);
+			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 	}
 }
 
 impl<'a> World<'a>{
-	pub fn add_actor(&mut self, _actor : actor::Actor<'a>){
+	pub fn add_actor(&mut self, _actor : drawable::Sprite<'a>){
 		self.m_game_objects.push(_actor);
 	}
 	//constructs a world with the given ground textures
@@ -37,9 +37,9 @@ impl<'a> World<'a>{
 			for y in 0..8{
 				println!("{}", x*y);
 				if math::get_rand(1) == 1 {
-					ground_tiles.push(actor::Actor::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[0]));
+					ground_tiles.push(drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[0]));
 				}else{
-					ground_tiles.push(actor::Actor::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[1]));
+					ground_tiles.push(drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[1]));
 				}
 			}
 		}
