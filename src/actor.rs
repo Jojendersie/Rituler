@@ -5,19 +5,28 @@ use drawable;
 use sdl2::rect::{Point, Rect};
 use sdl2::pixels;
 use std::cmp::max;
+use projectile;
 
 pub struct Actor<'a> {
 	pub m_sprite : drawable::Sprite<'a>,
 	pub m_life : f32,
 	pub m_max_life : f32,
+	pub m_wantsToAttack : bool,
+	pub m_coolDown : f32,
+	pub m_coolDownMax : f32,
+	pub m_projectileBuilder : &'a projectile::ProjectileBuilder<'a>,
 }
 
 impl<'a> Actor<'a> {
-	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _max_life: f32) -> Actor {
+	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _max_life: f32, _projBuilder: &'a projectile::ProjectileBuilder) -> Actor<'a> {
 		Actor {
 			m_sprite: drawable::Sprite::new(_vec, _texture),
 			m_life: _max_life,
-			m_max_life: _max_life
+			m_max_life: _max_life,
+			m_wantsToAttack : false,
+			m_coolDown : 2.0,
+			m_coolDownMax : 2.0,
+			m_projectileBuilder : _projBuilder,
 		}
 	}
 }

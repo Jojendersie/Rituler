@@ -6,6 +6,7 @@ use actor;
 use sdl2::rect::{Point, Rect};
 use constants::*;
 use sdl2::pixels;
+use projectile;
 
 pub struct Player<'a> {
 	pub m_actor : actor::Actor<'a>,
@@ -13,9 +14,9 @@ pub struct Player<'a> {
 }
 
 impl<'a> Player<'a> {
-	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture) -> Player {
+	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _projBuilder : &'a projectile::ProjectileBuilder<'a> ) -> Player<'a> {
 		Player {
-			m_actor: actor::Actor::new(_vec, _texture, 200.0),
+			m_actor: actor::Actor::new(_vec, _texture, 200.0, _projBuilder),
 			m_construction_progress: 0.0,
 		}
 	}

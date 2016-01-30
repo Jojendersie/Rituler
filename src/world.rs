@@ -42,6 +42,27 @@ impl <'a> actor::Dynamic for World<'a>
 {
 	fn process(&mut self)
 	{
+		for act in &mut self.m_game_objects{
+			act.m_coolDown -= 0.016667;
+			
+			if(act.m_wantsToAttack && act.m_coolDown <= 0.0){
+				act.m_coolDown = act.m_coolDownMax;
+				self.m_projectiles.push(act.m_projectileBuilder.create_projectile(act.m_sprite.m_location, math::Vector{x: 10.0, y: 10.0}));
+			}
+		}
+		
+		
+		//player is handled here
+		let playerAct = &mut self.m_player.m_actor;
+		playerAct.m_coolDown -= 0.016667;
+			
+		if(playerAct.m_wantsToAttack && playerAct.m_coolDown <= 0.0){
+			playerAct.m_coolDown = playerAct.m_coolDownMax;
+			let mut dir = math::Vector{x:1.0, y: 0.0};
+			dir.rotate(playerAct.m_sprite.m_angle);
+			self.m_projectiles.push(playerAct.m_projectileBuilder.create_projectile(playerAct.m_sprite.m_location, dir));
+		}
+	
 		for proj in &mut self.m_projectiles{
 			(proj as &mut actor::Dynamic).process();
 		}
