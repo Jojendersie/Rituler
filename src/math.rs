@@ -1,5 +1,6 @@
 use std::ops::Add;
 use std::ops::Sub;
+use std::ops::Mul;
 use std::f32;
 
 #[derive(Copy, Clone)]
@@ -24,6 +25,22 @@ impl Sub for Vector {
     }
 }
 
+impl Mul<f32> for Vector {
+	type Output = Vector;
+	
+	fn mul(self, _rhs: f32) -> Vector {
+		Vector { x : self.x * _rhs, y : self.y * _rhs }
+	}
+}
+
+impl Mul<Vector> for f32 {
+	type Output = Vector;
+	
+	fn mul(self, _rhs: Vector) -> Vector {
+		Vector { x : _rhs.x * self, y : _rhs.y * self }
+	}
+}
+
 impl Vector {
 
 	pub fn normalize(&mut self) {
@@ -31,7 +48,7 @@ impl Vector {
 		self.x /= len;
 		self.y /= len;
 	}
-
+	
 }
 
 static mut xsNum: u32 = 12345871;

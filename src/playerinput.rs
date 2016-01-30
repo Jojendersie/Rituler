@@ -29,5 +29,5 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 	move_dir.normalize();
 	
 	//let old_pos = _player.m_location.clone();
-	_player.m_sprite.m_location = _player.m_sprite.m_location + move_dir;
+	_player.m_sprite.m_location = _player.m_sprite.m_location + 5.0 * move_dir;
 }

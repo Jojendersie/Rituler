@@ -75,7 +75,7 @@ fn main() {
 		
 		//cap frame time
 		time = time::precise_time_ns() - time;
-		//1666666
-		if time < 1666666 { std::thread::sleep(std::time::Duration::from_millis((1666666 - time)/100000));}
+		//16666666
+		if time < 16666666 { std::thread::sleep(std::time::Duration::from_millis((16666666 - time)/1000000));}
 	}
 }
