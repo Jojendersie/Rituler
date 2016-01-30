@@ -33,3 +33,22 @@ impl Vector {
 	}
 
 }
+
+static mut xsNum: u32 = 12345871;
+
+//simple procedual random numbers!
+fn xor_shift() -> u32
+{
+unsafe{
+	xsNum ^= xsNum << 13;
+	xsNum ^= xsNum >> 17;
+	xsNum ^= xsNum << 5;
+	xsNum
+	}
+}
+
+pub fn get_rand(_max : u32) -> i32
+{
+	(xor_shift() % (_max + 1)) as i32
+}
+

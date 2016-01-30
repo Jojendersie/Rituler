@@ -35,12 +35,12 @@ impl<'a> World<'a>{
 //		let rng = rand::XorShiftRng::new_unseeded();
 		for x in 0..8{
 			for y in 0..8{
-		//		println!("{}", (&rng as &rand::Rng).next_u32() % 2 == 0);
-		//		if(rng.next_u32() % 2 == 0){
+				println!("{}", x*y);
+				if math::get_rand(1) == 1 {
 					ground_tiles.push(actor::Actor::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[0]));
-		//		}else{
-		//			groundTiles.push(actor::Actor::new( math::Vector{x : (x as f32) * 350.0, y : (x as f32) * 350.0}, _groundTextures[1]));
-		//		}
+				}else{
+					ground_tiles.push(actor::Actor::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[1]));
+				}
 			}
 		}
 		
