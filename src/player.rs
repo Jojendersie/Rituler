@@ -3,7 +3,9 @@ extern crate sdl2;
 use math;
 use drawable;
 use actor;
-use sdl2::rect::{Point};
+use sdl2::rect::{Point, Rect};
+use constants::*;
+use sdl2::pixels;
 
 pub struct Player<'a> {
 	pub m_actor : actor::Actor<'a>,
@@ -27,12 +29,16 @@ impl <'a> drawable::Drawable for Player<'a>
 		let len = (self.m_max_life / 2.0) as i32;
 		let xpos = self.m_sprite.m_location.x as i32 - len/2 - _cam_pos.x();
 		let ypos = self.m_sprite.m_location.y as i32 - _cam_pos.y() - max_size - 20;
-		_renderer.set_draw_color(pixels::Color::RGB(10,10,10));
-		_renderer.fill_rect(Rect::new(xpos, ypos, len as u32, 10).unwrap().unwrap());
-		let len = (self.m_life / 2.0) as i32;
-		_renderer.set_draw_color(pixels::Color::RGB(100,255,100));
-		_renderer.fill_rect(Rect::new(xpos, ypos, len as u32, 10).unwrap().unwrap());*/
+		*/
 		
 		(&self.m_actor as &drawable::Drawable).draw(_renderer, _cam_pos);
+		
+		if self.m_construction_progress > 0.0 {
+			_renderer.set_draw_color(pixels::Color::RGB(10,10,10));
+			_renderer.draw_rect(Rect::new(50, WIN_HEIGHT - 75, WIN_WIDTH as u32 - 100, 25).unwrap().unwrap());
+			let len = ((WIN_WIDTH - 102) as f32 * self.m_construction_progress) as u32;
+			_renderer.set_draw_color(pixels::Color::RGB(50,50,200));
+			_renderer.fill_rect(Rect::new(51, WIN_HEIGHT - 74, len, 23).unwrap().unwrap());
+		}
 	}
 }
