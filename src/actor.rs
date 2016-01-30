@@ -20,7 +20,7 @@ pub struct Actor
 impl Drawable for Actor
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer) {
-		_renderer.copy_ex(&self.m_texture, None, Rect::new(100, 100, self.m_sprite_size.0, self.m_sprite_size.1).unwrap(),
+		_renderer.copy_ex(&self.m_texture, None, Rect::new(self.m_location.x as i32, self.m_location.y as i32, self.m_sprite_size.0, self.m_sprite_size.1).unwrap(),
 						  self.m_angle as f64, Some(Point::new((self.m_sprite_size.0/2) as i32, (self.m_sprite_size.1/2) as i32)), (false,false))
 	}
 }
