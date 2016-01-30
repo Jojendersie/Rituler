@@ -1,5 +1,6 @@
 use std::ops::Add;
 use std::ops::Sub;
+use std::f32;
 
 #[derive(Copy, Clone)]
 pub struct Vector{
@@ -23,8 +24,12 @@ impl Sub for Vector {
     }
 }
 
-/*impl Clone for Vector {
-	fn clone(&self) -> Self {
-		Vector { x: self.x, y: self.y }
+impl Vector {
+
+	pub fn normalize(&mut self) {
+		let len = f32::sqrt(self.x * self.x + self.y * self.y) + 1.0e-6;
+		self.x /= len;
+		self.y /= len;
 	}
-}*/
+
+}

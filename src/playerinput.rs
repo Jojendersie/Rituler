@@ -34,6 +34,7 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 	if _keyboard.is_scancode_pressed(Scancode::A) {
 		move_dir.x -= 1.0;
 	}
+	move_dir.normalize();
 	
 	//let old_pos = _player.m_location.clone();
 	_player.m_location = _player.m_location + move_dir;
