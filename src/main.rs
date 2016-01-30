@@ -32,13 +32,19 @@ fn main() {
 	let window = video_sys.window("Rituler", 1600, 900).build().ok().expect("Failed to create window.");
 	let mut renderer = window.renderer().build().ok().expect("Failed to create renderer.");
 	
-	// Resources TODO: move to structures
-	//let texture = renderer.load_texture(&Path::new("img/mage.png")).unwrap();
+	// the "textureManager"
+	let mut textures : Vec < sdl2::render::Texture > = Vec::new();
 	
+	//load resources
+	textures.push(renderer.load_texture(&Path::new("img/mage.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/golem.png")).unwrap());
+	//ground layer
+	textures.push(renderer.load_texture(&Path::new("img/grass.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
 	//test
-	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0}, renderer.load_texture(&Path::new("img/mage.png")).unwrap() );
-	let actor2 = actor::Actor::new( math::Vector{x : 200.0, y : 420.0}, renderer.load_texture(&Path::new("img/golem.png")).unwrap() );
-	let mut world = world::World{m_groundTiles : Vec::new(), m_gameObjects : Vec::new()};
+	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0]);
+	let actor2 = actor::Actor::new( math::Vector{x : 20.0, y : 42.0}, &textures[1] );
+	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_gameObjects : Vec::new()};
 	world.addActor(actor);
 	world.addActor(actor2);
 	

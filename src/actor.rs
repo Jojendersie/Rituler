@@ -9,15 +9,15 @@ pub trait Drawable {
     fn draw(&self, _renderer : &mut sdl2::render::Renderer );
 }
 
-pub struct Actor
+pub struct Actor<'a>
 {
 	pub m_location : math::Vector,
-	pub m_texture : sdl2::render::Texture,
+	pub m_texture : &'a sdl2::render::Texture,
 	pub m_angle : f32,
 	pub m_sprite_size : (u32, u32),
 }
 
-impl Drawable for Actor
+impl <'a> Drawable for Actor<'a>
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer) {
 		_renderer.copy_ex(&self.m_texture, None, Rect::new(self.m_location.x as i32, self.m_location.y as i32, self.m_sprite_size.0, self.m_sprite_size.1).unwrap(),
@@ -25,8 +25,8 @@ impl Drawable for Actor
 	}
 }
 
-impl Actor {
-	pub fn new(_vec: math::Vector, _texture: sdl2::render::Texture) -> Actor {
+impl<'a> Actor<'a> {
+	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture) -> Actor {
 		let tex_query = _texture.query();
 		Actor {
 			m_location: _vec,
