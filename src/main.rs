@@ -44,9 +44,9 @@ fn main() {
 	//test
 	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0]);
 	let actor2 = actor::Actor::new( math::Vector{x : 20.0, y : 42.0}, &textures[1] );
-	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_gameObjects : Vec::new()};
-	world.addActor(actor);
-	world.addActor(actor2);
+	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
+	world.add_actor(actor);
+	world.add_actor(actor2);
 	
 	while unsafe{running} {
 		let mut event_pump = sdl_context.event_pump().unwrap();
@@ -55,7 +55,7 @@ fn main() {
 		for event in event_pump.poll_iter() {
 			handle_event(event);
 		}
-		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world.m_gameObjects[0]);
+		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world.m_game_objects[0]);
 		
 		renderer.clear();
 		(&world as &actor::Drawable).draw(&mut renderer);
