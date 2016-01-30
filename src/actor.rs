@@ -6,7 +6,7 @@ use sdl2::rect::{Rect, Point};
 use math;
 
 pub trait Drawable {
-    fn draw(&self, _renderer : &mut sdl2::render::Renderer );
+    fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point);
 }
 
 pub struct Actor<'a>
@@ -19,9 +19,11 @@ pub struct Actor<'a>
 
 impl <'a> Drawable for Actor<'a>
 {
-	fn draw(&self, _renderer : &mut sdl2::render::Renderer) {
-		_renderer.copy_ex(&self.m_texture, None, Rect::new(self.m_location.x as i32, self.m_location.y as i32, self.m_sprite_size.0, self.m_sprite_size.1).unwrap(),
-						  self.m_angle as f64, Some(Point::new((self.m_sprite_size.0/2) as i32, (self.m_sprite_size.1/2) as i32)), (false,false))
+	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point) {
+		let hsize_x = (self.m_sprite_size.0/2) as i32;
+		let hsize_y = (self.m_sprite_size.1/2) as i32;
+		_renderer.copy_ex(&self.m_texture, None, Rect::new(self.m_location.x as i32 - _cam_pos.x() - hsize_x, self.m_location.y as i32 - _cam_pos.y() - hsize_y, self.m_sprite_size.0, self.m_sprite_size.1).unwrap(),
+						  self.m_angle as f64, Some(Point::new(hsize_x, hsize_y)), (false,false))
 	}
 }
 

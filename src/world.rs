@@ -3,6 +3,7 @@ extern crate sdl2_image;
 
 use actor;
 use math;
+use sdl2::rect::{Point};
 
 pub struct World<'a>
 {
@@ -12,13 +13,13 @@ pub struct World<'a>
 
 impl <'a> actor::Drawable for World<'a>
 {
-	fn draw(&self, _renderer : &mut sdl2::render::Renderer){
+	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point){
 		for act in &self.m_groundTiles{
-			(act as &actor::Drawable).draw(_renderer);
+			(act as &actor::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
 		for act in &self.m_gameObjects{
-			(act as &actor::Drawable).draw(_renderer);
+			(act as &actor::Drawable).draw(_renderer, &_cam_pos);
 		}
 	}
 }
