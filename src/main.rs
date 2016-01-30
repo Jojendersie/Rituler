@@ -4,8 +4,12 @@ extern crate sdl2_image;
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
 use std::path::Path;
+use sdl2::rect::{Rect, Point};
+use std::f32;
+//use sdl2::mouse::{MouseUtil};
 
 static mut running: bool = true;
+//static mut mousePos: (i32, i32) = (0,0);
 
 fn handle_event(event: sdl2::event::Event) {
 	use sdl2::event::Event;
@@ -36,9 +40,13 @@ fn main() {
 			handle_event(event);
 		}
 		
+		//let mx:i32;
+		//let my:i32;
+		let (_, mx, my) = sdl_context.mouse().mouse_state();
+		let angle = f32::atan2((my-160) as f32, (mx-162) as f32) * 180.0 / f32::consts::PI + 45.0;
+		
 		renderer.clear();
-		//renderer.copy(&texture, None, Some(Rect::new_unwrap(100, 100, 220, 224)));
-		renderer.copy(&texture, None, None);
+		renderer.copy_ex(&texture, None, Rect::new(100, 100, 120, 124).unwrap(), angle as f64, Some(Point::new(60,62)), (false,false));
 		renderer.present();
 	}
 }
