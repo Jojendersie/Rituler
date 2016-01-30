@@ -1,6 +1,10 @@
 extern crate sdl2;
 extern crate sdl2_image;
 
+//includes
+mod math;
+mod actor;
+
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
 use std::path::Path;
@@ -32,6 +36,9 @@ fn main() {
 	// Resources TODO: move to structures
 	let texture = renderer.load_texture(&Path::new("img/mage.png")).unwrap();
 	
+	//test
+	let mut actor = actor::Actor{m_location : math::Vector{x : 10.0, y : 10.0}, m_texture : renderer.load_texture(&Path::new("img/mage.png")).unwrap()};
+	
 	while unsafe{running} {
 		let mut event_pump = sdl_context.event_pump().unwrap();
 		
@@ -47,6 +54,8 @@ fn main() {
 		
 		renderer.clear();
 		renderer.copy_ex(&texture, None, Rect::new(100, 100, 120, 124).unwrap(), angle as f64, Some(Point::new(60,62)), (false,false));
+
+		(&actor as &actor::Drawable).draw(&mut renderer);
 		renderer.present();
 	}
 }
