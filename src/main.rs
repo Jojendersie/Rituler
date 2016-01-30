@@ -48,6 +48,10 @@ fn main() {
 			handle_event(event);
 		}
 		
+		//let mx:i32;
+		//let my:i32;
+		let (_, mx, my) = sdl_context.mouse().mouse_state();
+		let angle = f32::atan2((my-160) as f32, (mx-162) as f32) * 180.0 / f32::consts::PI + 45.0;
 		renderer.clear();
 		(&world as &actor::Drawable).draw(&mut renderer);
 		renderer.present();
