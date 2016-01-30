@@ -2,13 +2,14 @@ extern crate sdl2;
 extern crate sdl2_image;
 
 use drawable;
+use actor;
 use math;
 use sdl2::rect::{Point};
 
 pub struct World<'a>
 {
 	pub m_ground_tiles : Vec< drawable::Sprite<'a> >,
-	pub m_game_objects : Vec< drawable::Sprite<'a> >,
+	pub m_game_objects : Vec< actor::Actor<'a> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -19,13 +20,13 @@ impl <'a> drawable::Drawable for World<'a>
 		}
 		
 		for act in &self.m_game_objects{
-			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(&act.m_sprite as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 	}
 }
 
 impl<'a> World<'a>{
-	pub fn add_actor(&mut self, _actor : drawable::Sprite<'a>){
+	pub fn add_actor(&mut self, _actor : actor::Actor<'a>){
 		self.m_game_objects.push(_actor);
 	}
 	//constructs a world with the given ground textures

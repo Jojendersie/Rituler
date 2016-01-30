@@ -5,6 +5,7 @@ extern crate sdl2_image;
 mod constants;
 mod math;
 mod drawable;
+mod actor;
 mod world;
 mod playerinput;
 
@@ -45,8 +46,8 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/grass.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
 	//test
-	let actor = drawable::Sprite::new( math::Vector{x : 10.0, y : 10.0},  &textures[0]);
-	let actor2 = drawable::Sprite::new( math::Vector{x : 0.0, y : 0.0}, &textures[1] );
+	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0], 1000.0);
+	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0);
 	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
 	world.add_actor(actor);
 	world.add_actor(actor2);
@@ -61,7 +62,7 @@ fn main() {
 		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world.m_game_objects[0]);
 		
 		// The camera is always attached to the player which is entity 0
-		let cam_pos = Point::new(world.m_game_objects[0].m_location.x as i32 - WIN_WIDTH/2, world.m_game_objects[0].m_location.y as i32 - WIN_HEIGHT/2);
+		let cam_pos = Point::new(world.m_game_objects[0].m_sprite.m_location.x as i32 - WIN_WIDTH/2, world.m_game_objects[0].m_sprite.m_location.y as i32 - WIN_HEIGHT/2);
 		
 		renderer.clear();
 		(&world as &drawable::Drawable).draw(&mut renderer, &cam_pos);
