@@ -9,6 +9,7 @@ mod world;
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
 use std::path::Path;
+use std::f32;
 
 static mut running: bool = true;
 
@@ -34,9 +35,9 @@ fn main() {
 	let texture = renderer.load_texture(&Path::new("img/mage.png")).unwrap();
 	
 	//test
+	let mut actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0}, renderer.load_texture(&Path::new("img/mage.png")).unwrap() );
+	let mut actor2 = actor::Actor::new( math::Vector{x : 20.0, y : 42.0}, renderer.load_texture(&Path::new("img/golem.png")).unwrap() );
 	let mut world = world::World{m_groundTiles : Vec::new(), m_gameObjects : Vec::new()};
-	let mut actor = actor::Actor{m_location : math::Vector{x : 10.0, y : 10.0}, m_texture : renderer.load_texture(&Path::new("img/mage.png")).unwrap()};
-	let mut actor2 = actor::Actor{m_location : math::Vector{x : 20.0, y : 42.0}, m_texture : renderer.load_texture(&Path::new("img/golem.png")).unwrap()};
 	world.addActor(actor);
 	world.addActor(actor2);
 	
@@ -54,6 +55,9 @@ fn main() {
 		let angle = f32::atan2((my-160) as f32, (mx-162) as f32) * 180.0 / f32::consts::PI + 45.0;
 		renderer.clear();
 		(&world as &actor::Drawable).draw(&mut renderer);
+		//renderer.copy_ex(&texture, None, Rect::new(100, 100, 120, 124).unwrap(), angle as f64, Some(Point::new(60,62)), (false,false));
+
+		//(&actor as &actor::Drawable).draw(&mut renderer);
 		renderer.present();
 	}
 }
