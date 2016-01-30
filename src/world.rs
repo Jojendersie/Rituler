@@ -20,7 +20,7 @@ impl <'a> drawable::Drawable for World<'a>
 		}
 		
 		for act in &self.m_game_objects{
-			(&act.m_sprite as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 	}
 }
