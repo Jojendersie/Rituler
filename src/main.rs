@@ -47,10 +47,11 @@ fn main() {
 	//ground layer
 	textures.push(renderer.load_texture(&Path::new("img/grass.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/golem_altar.png")).unwrap());
 	//test
 	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0], 200.0);
 	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0);
-	let mut world = world::World::new(vec![&textures[2], &textures[3]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
+	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
 	world.add_actor(actor);
 	world.add_actor(actor2);
 	
@@ -63,7 +64,7 @@ fn main() {
 		for event in event_pump.poll_iter() {
 			handle_event(event);
 		}
-		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world.m_game_objects[0]);
+		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world);
 		
 		// The camera is always attached to the player which is entity 0
 		let cam_pos = Point::new(world.m_game_objects[0].m_sprite.m_location.x as i32 - WIN_WIDTH/2, world.m_game_objects[0].m_sprite.m_location.y as i32 - WIN_HEIGHT/2);
