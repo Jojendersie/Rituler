@@ -45,27 +45,40 @@ impl <'a> actor::Dynamic for World<'a>
 		for act in &mut self.m_game_objects{
 			act.m_coolDown -= 0.016667;
 			
-			if(act.m_wantsToAttack && act.m_coolDown <= 0.0){
+			if(act.m_wants_to_attack && act.m_coolDown <= 0.0){
 				act.m_coolDown = act.m_coolDownMax;
-				self.m_projectiles.push(act.m_projectileBuilder.create_projectile(act.m_sprite.m_location, math::Vector{x: 10.0, y: 10.0}));
+				self.m_projectiles.push(act.m_projectile_builder.create_projectile(act.m_sprite.m_location, math::Vector{x: 10.0, y: 10.0}));
 			}
 		}
 		
 		
-		//player is handled here
-		let playerAct = &mut self.m_player.m_actor;
-		playerAct.m_coolDown -= 0.016667;
+		//player is handled extra
+		let player_act = &mut self.m_player.m_actor;
+		player_act.m_coolDown -= 0.016667;
 			
-		if(playerAct.m_wantsToAttack && playerAct.m_coolDown <= 0.0){
-			playerAct.m_coolDown = playerAct.m_coolDownMax;
+		if(player_act.m_wants_to_attack && player_act.m_coolDown <= 0.0){
+			player_act.m_coolDown = player_act.m_coolDownMax;
 			let mut dir = math::Vector{x:1.0, y: 0.0};
-			dir.rotate(playerAct.m_sprite.m_angle);
-			self.m_projectiles.push(playerAct.m_projectileBuilder.create_projectile(playerAct.m_sprite.m_location, dir));
+			dir.rotate(player_act.m_sprite.m_angle);
+			self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location, dir));
 		}
-	
+		
+		//process projectiles
 		for proj in &mut self.m_projectiles{
 			(proj as &mut actor::Dynamic).process();
 		}
+		
+		//collision of projectiles
+		for act in &self.m_game_objects{
+			for proj in &mut self.m_projectiles{
+				if (act.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.45 * (act.m_sprite.m_sprite_size.0 as f32){
+					proj.m_is_finished = true;
+				}
+			}
+		}
+		
+		//remove all finished projectiles
+		self.m_projectiles.retain(|x| !x.m_is_finished);
 	}
 }
 

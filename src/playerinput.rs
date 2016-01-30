@@ -32,7 +32,7 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 		player.m_actor.m_sprite.m_angle = f32::atan2((my - WIN_HEIGHT/2) as f32,
 									 (mx - WIN_WIDTH/2) as f32) * 180.0 / f32::consts::PI + 45.0;
 		
-		player.m_actor.m_wantsToAttack = mouse_state.left();
+		player.m_actor.m_wants_to_attack = mouse_state.left();
 	//	if mouse_state.left() {println!("alah uhagbar");};
 		
 		let mut move_dir = math::Vector{x:0.0, y:0.0};

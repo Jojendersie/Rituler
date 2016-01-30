@@ -25,6 +25,7 @@ impl <'a> ProjectileBuilder<'a>{
 pub struct Projectile<'a> {
 	pub m_sprite : drawable::Sprite<'a>,
 	pub m_velocity : math::Vector,
+	pub m_is_finished : bool,
 }
 
 impl <'a> drawable::Drawable for Projectile<'a>
@@ -41,7 +42,8 @@ impl<'a> Projectile<'a> {
 	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _vel : math::Vector) -> Projectile {
 		Projectile{
 			m_sprite: drawable::Sprite::new(_vec, _texture),
-			m_velocity: _vel
+			m_velocity: _vel,
+			m_is_finished : false,
 		}
 	}
 }
