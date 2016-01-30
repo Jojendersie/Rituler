@@ -39,3 +39,8 @@ impl <'a> drawable::Drawable for Actor<'a>
 		(&self.m_sprite as &drawable::Drawable).draw(_renderer, _cam_pos);
 	}
 }
+
+// ************************************************************ //
+pub trait Dynamic {
+    fn process(&mut self);
+}

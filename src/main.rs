@@ -9,6 +9,7 @@ mod drawable;
 mod actor;
 mod world;
 mod playerinput;
+mod projectile;
 mod player;
 
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
@@ -68,12 +69,16 @@ fn main() {
 		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world);
 		
 		// The camera is always attached to the player which is entity 0
-		let player_pos = &world.m_player.m_actor.m_sprite.m_location;
-		let cam_pos = Point::new(player_pos.x as i32 - WIN_WIDTH/2, player_pos.y as i32 - WIN_HEIGHT/2);
+		{
+			let player_pos = &world.m_player.m_actor.m_sprite.m_location;
+			let cam_pos = Point::new(player_pos.x as i32 - WIN_WIDTH/2, player_pos.y as i32 - WIN_HEIGHT/2);
 		
-		renderer.set_draw_color(pixels::Color::RGB(0,0,0));
-		renderer.clear();
-		(&world as &drawable::Drawable).draw(&mut renderer, &cam_pos);
+		
+			renderer.set_draw_color(pixels::Color::RGB(0,0,0));
+			renderer.clear();
+			(&world as &drawable::Drawable).draw(&mut renderer, &cam_pos);
+		}
+		(&mut world as &mut actor::Dynamic).process();
 		renderer.present();
 		
 		//cap frame time

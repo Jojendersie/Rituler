@@ -4,6 +4,7 @@ extern crate sdl2_image;
 use drawable;
 use actor;
 use math;
+use projectile;
 use sdl2::rect::{Point};
 use constants::*;
 use player;
@@ -15,6 +16,7 @@ pub struct World<'a>
 	pub m_ground_tile_ids : Vec< i32 >,
 	pub m_game_objects : Vec< actor::Actor<'a> >,
 	pub m_ground_textures : Vec < &'a sdl2::render::Texture >,
+	pub m_projectiles : Vec< projectile::Projectile<'a> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -24,11 +26,25 @@ impl <'a> drawable::Drawable for World<'a>
 			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
+		for proj in &self.m_projectiles{
+			(proj as &drawable::Drawable).draw(_renderer, &_cam_pos);
+		}
+		
 		for act in &self.m_game_objects{
 			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
 		(&self.m_player as &drawable::Drawable).draw(_renderer, &_cam_pos);
+	}
+}
+
+impl <'a> actor::Dynamic for World<'a>
+{
+	fn process(&mut self)
+	{
+		for proj in &mut self.m_projectiles{
+			(proj as &mut actor::Dynamic).process();
+		}
 	}
 }
 
@@ -40,12 +56,16 @@ impl<'a> World<'a>{
 	pub fn add_actor(&mut self, _actor : actor::Actor<'a>){
 		self.m_game_objects.push(_actor);
 	}
+	
+	pub fn spawn_projectile(&mut self, _projectile: projectile::Projectile<'a>){
+		self.m_projectiles.push(_projectile);
+	}
+	
+	
 	//constructs a world with the given ground textures
 	pub fn new(mut _ground_textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
 		let mut ground_tiles = Vec::new();
 		let mut ground_tile_ids = Vec::new();
-		
-//		let rng = rand::XorShiftRng::new_unseeded();
 		for x in 0..MAP_NUM_TILES_X {
 			for y in 0..MAP_NUM_TILES_Y {
 				let id: i32 = math::get_rand(1);
@@ -60,6 +80,7 @@ impl<'a> World<'a>{
 			m_ground_tile_ids: ground_tile_ids,
 			m_game_objects: Vec::new(),
 			m_ground_textures: _ground_textures,
+			m_projectiles: Vec::new(),
 		}
 	}
 	
