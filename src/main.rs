@@ -9,6 +9,7 @@ mod drawable;
 mod actor;
 mod world;
 mod playerinput;
+mod player;
 
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
@@ -49,10 +50,10 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/golem_altar.png")).unwrap());
 	//test
-	let actor = actor::Actor::new( math::Vector{x : 10.0, y : 10.0},  &textures[0], 200.0);
+	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0]);
 	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0);
-	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]]);//world::World{m_groundTiles : Vec::new(), m_game_objects : Vec::new()};
-	world.add_actor(actor);
+	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]], player);
+	//world.set_player(player);
 	world.add_actor(actor2);
 	
 	while unsafe{running} {
@@ -67,7 +68,8 @@ fn main() {
 		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world);
 		
 		// The camera is always attached to the player which is entity 0
-		let cam_pos = Point::new(world.m_game_objects[0].m_sprite.m_location.x as i32 - WIN_WIDTH/2, world.m_game_objects[0].m_sprite.m_location.y as i32 - WIN_HEIGHT/2);
+		let player_pos = &world.m_player.m_actor.m_sprite.m_location;
+		let cam_pos = Point::new(player_pos.x as i32 - WIN_WIDTH/2, player_pos.y as i32 - WIN_HEIGHT/2);
 		
 		renderer.set_draw_color(pixels::Color::RGB(0,0,0));
 		renderer.clear();

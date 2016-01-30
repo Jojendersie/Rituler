@@ -6,9 +6,11 @@ use actor;
 use math;
 use sdl2::rect::{Point};
 use constants::*;
+use player;
 
 pub struct World<'a>
 {
+	pub m_player : player::Player<'a>,
 	pub m_ground_tiles : Vec< drawable::Sprite<'a> >,
 	pub m_ground_tile_ids : Vec< i32 >,
 	pub m_game_objects : Vec< actor::Actor<'a> >,
@@ -25,15 +27,21 @@ impl <'a> drawable::Drawable for World<'a>
 		for act in &self.m_game_objects{
 			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
+		
+		(&self.m_player as &drawable::Drawable).draw(_renderer, &_cam_pos);
 	}
 }
 
 impl<'a> World<'a>{
+	/*pub fn set_player(&mut self, _player : player::Player<'a>){
+		self.m_player = _player;
+	}*/
+	
 	pub fn add_actor(&mut self, _actor : actor::Actor<'a>){
 		self.m_game_objects.push(_actor);
 	}
 	//constructs a world with the given ground textures
-	pub fn new(mut _ground_textures : Vec < &sdl2::render::Texture >) -> World {
+	pub fn new(mut _ground_textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
 		let mut ground_tiles = Vec::new();
 		let mut ground_tile_ids = Vec::new();
 		
@@ -47,6 +55,7 @@ impl<'a> World<'a>{
 		}
 		
 		World {
+			m_player: _player,
 			m_ground_tiles: ground_tiles,
 			m_ground_tile_ids: ground_tile_ids,
 			m_game_objects: Vec::new(),
