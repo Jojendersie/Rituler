@@ -60,14 +60,16 @@ impl <'a> actor::Dynamic for World<'a>
 		
 		
 		//player is handled extra
-		let player_act = &mut self.m_player.m_actor;
-		player_act.m_cool_down -= 0.016667;
-			
-		if player_act.m_wants_to_attack && player_act.m_cool_down <= 0.0 {
-			player_act.m_cool_down = player_act.m_cool_down_max;
-			let mut dir = math::Vector{x:1.0, y: 0.0};
-			dir.rotate(player_act.m_sprite.m_angle);
-			self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location, dir));
+		{
+			let player_act = &mut self.m_player.m_actor;
+			player_act.m_cool_down -= 0.016667;
+				
+			if player_act.m_wants_to_attack && player_act.m_cool_down <= 0.0 {
+				player_act.m_cool_down = player_act.m_cool_down_max;
+				let mut dir = math::Vector{x:1.0, y: 0.0};
+				dir.rotate(player_act.m_sprite.m_angle);
+				self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location, dir));
+			}
 		}
 		
 		//process projectiles
@@ -78,7 +80,11 @@ impl <'a> actor::Dynamic for World<'a>
 		// Process orbs
 		for orb in &mut self.m_orbs {
 			(orb as &mut actor::Dynamic).process();
-			// TODO: check collision with player
+			// Check collision with player
+			if (self.m_player.m_actor.m_sprite.m_location - orb.m_sprite.m_location).len() < 0.45 * (self.m_player.m_actor.m_sprite.m_sprite_size.0 as f32) {
+				self.m_player.m_inventory[orb.m_quality as usize] += 1;
+				orb.m_quality = -1;
+			}
 		}
 		
 		//collision of projectiles
@@ -88,7 +94,8 @@ impl <'a> actor::Dynamic for World<'a>
 					proj.m_is_finished = true;
 					act.m_life -= proj.m_damage;
 					if act.m_life <= 0.0 {
-						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, self.m_orb_textures[0], 0));
+						let id: i32 = 2 / (1 + math::get_rand(6));
+						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, self.m_orb_textures[id as usize], id));
 					}
 				}
 			}
@@ -96,6 +103,7 @@ impl <'a> actor::Dynamic for World<'a>
 		
 		//remove all finished projectiles
 		self.m_projectiles.retain(|x| !x.m_is_finished);
+		self.m_orbs.retain(|x| x.m_quality >= 0);
 		self.m_game_objects.retain(|x| x.m_life > 0.0);
 	}
 }
@@ -156,9 +164,5 @@ impl<'a> World<'a>{
 			self.m_ground_tile_ids[index] = _tile;
 			self.m_ground_tiles[index] = drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, self.m_ground_textures[_tile as usize]);
 		}
-	}
-	
-	fn spawn_soul(&mut self, _actor : &actor::Actor) {
-		self.m_orbs.push(orb::Orb::new(_actor.m_sprite.m_location, self.m_orb_textures[0], 0));
 	}
 }
