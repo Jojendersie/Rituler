@@ -39,7 +39,7 @@ impl <'a> drawable::Drawable for Projectile<'a>
 		let offset = Point::new(self.m_velocity.x as i32, self.m_velocity.y as i32);
 		let baseLoc = Point::new((self.m_sprite.m_location.x as i32) - _cam_pos.x() - offset.x()*5, (self.m_sprite.m_location.y as i32) - _cam_pos.y() - offset.y()*5 );
 		
-		_renderer.set_draw_color(pixels::Color::RGB(230,140,20));
+		_renderer.set_draw_color(pixels::Color::RGB(95,54,228));
 		
 		let max = if self.m_life_time < 48 {
 			self.m_life_time / 2
