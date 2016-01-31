@@ -12,12 +12,13 @@ pub struct ProjectileBuilder<'a>{
 	pub m_texture : &'a sdl2::render::Texture,
 	pub m_speed : f32,
 	pub m_damage : f32,
+	pub m_life_time : i32,
 }
 
 impl <'a> ProjectileBuilder<'a>{
 	pub fn create_projectile(&self, _loc : math::Vector, mut _dir : math::Vector) -> Projectile{
 		_dir.normalize();
-		Projectile::new(_loc, self.m_texture, _dir * self.m_speed, self.m_damage)
+		Projectile::new(_loc, self.m_texture, _dir * self.m_speed, self.m_damage, self.m_life_time)
 	}
 }
 
@@ -61,13 +62,13 @@ impl <'a> drawable::Drawable for Projectile<'a>
 
 //constructor
 impl<'a> Projectile<'a> {
-	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _vel : math::Vector, _damage : f32) -> Projectile {
+	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _vel : math::Vector, _damage : f32, _life_time : i32) -> Projectile {
 		Projectile{
 			m_sprite: drawable::Sprite::new(_vec, _texture),
 			m_velocity: _vel,
 			m_is_finished : false,
 			m_damage : _damage,
-			m_life_time : 0,
+			m_life_time : _life_time,
 		}
 	}
 }
@@ -77,7 +78,7 @@ impl <'a> actor::Dynamic for Projectile<'a>
 	fn process(&mut self)
 	{
 		self.m_sprite.m_location = self.m_sprite.m_location + self.m_velocity;
-		self.m_life_time = self.m_life_time + 1;
-		if self.m_life_time > 300 {self.m_is_finished = true;}
+		self.m_life_time = self.m_life_time - 1;
+		if self.m_life_time <= 0 {self.m_is_finished = true;}
 	}
 }
