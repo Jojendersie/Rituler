@@ -37,9 +37,9 @@ impl <'a> drawable::Drawable for Projectile<'a>
 		// Draw a life bar
 		
 		let offset = Point::new(self.m_velocity.x as i32, self.m_velocity.y as i32);
-		let baseLoc = Point::new((self.m_sprite.m_location.x as i32) - _cam_pos.x() - offset.x()*5, (self.m_sprite.m_location.y as i32) - _cam_pos.y() - offset.y()*5 );
+		let base_loc = Point::new((self.m_sprite.m_location.x as i32) - _cam_pos.x() - offset.x()*5, (self.m_sprite.m_location.y as i32) - _cam_pos.y() - offset.y()*5 );
 		
-		_renderer.set_draw_color(pixels::Color::RGB(230,140,20));
+		_renderer.set_draw_color(pixels::Color::RGB(95,54,228));
 		
 		let max = if self.m_life_time < 48 {
 			self.m_life_time / 2
@@ -47,9 +47,9 @@ impl <'a> drawable::Drawable for Projectile<'a>
 			24
 		};
 		for i in 0..max{
-			let randOff = i + 40;
-			let i_2 = randOff / 2; 
-			let point = Point::new(baseLoc.x() - i * offset.x() + math::get_rand(randOff as u32) - (i_2) - 2, baseLoc.y() - i * offset.y() + math::get_rand(randOff as u32) - i_2 - 2);
+			let rand_off = i + 40;
+			let i_2 = rand_off / 2; 
+			let point = Point::new(base_loc.x() - i * offset.x() + math::get_rand(rand_off as u32) - (i_2) - 2, base_loc.y() - i * offset.y() + math::get_rand(rand_off as u32) - i_2 - 2);
 		//	_renderer.draw_point();
 			_renderer.fill_rect(Rect::new(point.x(), point.y(), 4, 4).unwrap().unwrap());
 		}
@@ -78,5 +78,6 @@ impl <'a> actor::Dynamic for Projectile<'a>
 	{
 		self.m_sprite.m_location = self.m_sprite.m_location + self.m_velocity;
 		self.m_life_time = self.m_life_time + 1;
+		if self.m_life_time > 300 {self.m_is_finished = true;}
 	}
 }

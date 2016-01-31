@@ -10,7 +10,7 @@ use projectile;
 
 pub struct Player<'a> {
 	pub m_actor : actor::Actor<'a>,
-	pub m_orbSprites : Vec< drawable::Sprite<'a> >,
+	pub m_orb_sprites : Vec< drawable::Sprite<'a> >,
 	pub m_construction_progress : f32,
 	pub m_inventory: [i32; 3], // A counter for every collectable: currently only orbs.
 }
@@ -27,7 +27,7 @@ impl<'a> Player<'a> {
 		
 		Player {
 			m_actor: actor::Actor::new(_vec, _texture, 200.0, _proj_builder),
-			m_orbSprites: orb_sprites,
+			m_orb_sprites: orb_sprites,
 			m_construction_progress: 0.0,
 			m_inventory: [0; 3],
 		}
@@ -41,7 +41,7 @@ impl <'a> drawable::Drawable for Player<'a>
 		for o in 0..3 {
 			for i in 1..(self.m_inventory[o]+1) {
 				let cam = Point::new(-30 - (o as i32) * 45, -WIN_HEIGHT + i * 50);
-				self.m_orbSprites[o].draw(_renderer, &cam);
+				self.m_orb_sprites[o].draw(_renderer, &cam);
 			}
 		}
 		
