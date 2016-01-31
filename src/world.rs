@@ -25,34 +25,39 @@ pub struct World<'a>
 	pub m_buildings : Vec< Option<building::Building<'a>> >,
 	pub m_controllers : Vec< controller::Controller >,
 	pub m_spawners : Vec< spawner::Spawner<'a> >,
+	pub m_screen_shake_ampl : f32,
 }
 
 impl <'a> drawable::Drawable for World<'a>
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point){
+		let shake_cam = Point::new(
+			_cam_pos.x() + (math::get_rand(30) as f32 * self.m_screen_shake_ampl) as i32,
+			_cam_pos.y() + (math::get_rand(30) as f32 * self.m_screen_shake_ampl) as i32);
+	
 		for act in &self.m_ground_tiles{
-			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(act as &drawable::Drawable).draw(_renderer, &shake_cam);
 		}
 		
 		for building in &self.m_buildings {
 			if let Some(b) = building.as_ref() {
-				b.draw(_renderer, &_cam_pos);
+				b.draw(_renderer, &shake_cam);
 			}
 		}
 		
 		for proj in &self.m_projectiles{
-			(proj as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(proj as &drawable::Drawable).draw(_renderer, &shake_cam);
 		}
 		
 		for orb in &self.m_orbs {
-			(orb as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(orb as &drawable::Drawable).draw(_renderer, &shake_cam);
 		}
 		
 		for act in &self.m_game_objects{
-			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
+			(act as &drawable::Drawable).draw(_renderer, &shake_cam);
 		}
 		
-		(&self.m_player as &drawable::Drawable).draw(_renderer, &_cam_pos);
+		(&self.m_player as &drawable::Drawable).draw(_renderer, &shake_cam);
 	}
 }
 
@@ -60,6 +65,13 @@ impl <'a> actor::Dynamic for World<'a>
 {
 	fn process(&mut self)
 	{
+		// Damp the screenshake
+//		if self.m_player.m_actor.m_life <= 0.0 {
+//			self.m_screen_shake_ampl = 5.0;
+//		} else {
+			self.m_screen_shake_ampl *= 0.95;
+//		}
+
 		for act in &mut self.m_game_objects{
 			act.m_cool_down -= 0.016667;
 			
@@ -108,7 +120,7 @@ impl <'a> actor::Dynamic for World<'a>
 					proj.m_is_finished = true;
 					act.m_life -= proj.m_damage;
 					if act.m_life <= 0.0 {
-						let id: i32 = 2 / (1 + math::get_rand(6));
+						let id: i32 = 2 / (1 + math::get_rand(4));
 						let tex = &self.m_textures[(id + TEX_SOUL0 as i32) as usize];
 						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, tex, id));
 					}
@@ -116,11 +128,12 @@ impl <'a> actor::Dynamic for World<'a>
 			}
 			//player with smaller collision box
 			if (self.m_player.m_actor.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.35 * (self.m_player.m_actor.m_sprite.m_sprite_size.0 as f32){
-					proj.m_is_finished = true;
-					self.m_player.m_actor.m_life -= proj.m_damage;
-					if self.m_player.m_actor.m_life <= 0.0 {
-						println!("Game Over!");
-					}
+				self.m_screen_shake_ampl = 0.5;
+				proj.m_is_finished = true;
+				self.m_player.m_actor.m_life -= proj.m_damage;
+				if self.m_player.m_actor.m_life <= 0.0 {
+					println!("Game Over!");
+				}
 			}
 		}
 
@@ -215,6 +228,7 @@ impl<'a> World<'a>{
 			m_buildings: buildings,
 			m_spawners : Vec::new(),
 			m_controllers : Vec::new(),
+			m_screen_shake_ampl : 0.0,
 		}
 	}
 	
@@ -231,7 +245,7 @@ impl<'a> World<'a>{
 	pub fn add_building(&mut self, _pos : math::Vector) {
 		let pos = math::Vector{x: f32::floor((_pos.x + 175.0) / 350.0) * 350.0,
 							   y: f32::floor((_pos.y + 175.0) / 350.0) * 350.0};
-		let build = building::Building::new(pos, &self.m_textures[TEX_GOLEM_ALTAR], [5,3,6],
+		let build = building::Building::new(pos, &self.m_textures[TEX_GOLEM_ALTAR], [4,2,1],
 											&vec![&self.m_textures[TEX_SOUL0], &self.m_textures[TEX_SOUL1], &self.m_textures[TEX_SOUL2]],
 											&vec![&self.m_textures[TEX_SOUL0_R], &self.m_textures[TEX_SOUL1_R], &self.m_textures[TEX_SOUL2_R]]);
 		let x = f32::floor((pos.x + 175.0) / 350.0) as i32;
@@ -240,6 +254,8 @@ impl<'a> World<'a>{
 			let index = (x * MAP_NUM_TILES_Y + y) as usize;
 			self.m_buildings[index] = Some(build);
 		}
+		
+		self.m_screen_shake_ampl = 2.0;
 	}
 	
 	pub fn get_building(&mut self, _pos : math::Vector) -> Option<&mut building::Building<'a>> {

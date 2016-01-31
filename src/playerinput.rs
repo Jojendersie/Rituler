@@ -5,6 +5,7 @@ use sdl2::keyboard::Scancode;
 use math;
 use world;
 use constants::*;
+use std::cmp::min;
 
 pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard::KeyboardState, _world: &mut world::World, _left_mouse_down: bool) {
 	let mut constructing = false;
@@ -14,12 +15,24 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 		// Check if the underlying map type is correct
 		let tile_id = _world.get_tile(player_pos);
 		let mut no_building = true;
+		let mut inventory = [0; 3];
+		for o in 0..3 {
+			inventory[o] = _world.m_player.m_inventory[o];
+		}
 		{
 			let build = _world.get_building(player_pos);
 			if build.is_some() {
-				build.unwrap().m_resources[0] = 1;
+				let b = build.unwrap();
+				for o in 0..3 {
+					let num_souls = b.m_req_resources[o] - b.m_resources[o];
+					b.m_resources[o] += min(inventory[o], num_souls);
+					inventory[o] -= min(inventory[o], num_souls);
+				}
 				no_building = false;
 			}
+		}
+		for o in 0..3 {
+			_world.m_player.m_inventory[o] = inventory[o];
 		}
 		if tile_id == 1 && no_building {
 			constructing = true;
