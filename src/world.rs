@@ -134,9 +134,43 @@ impl <'a> actor::Dynamic for World<'a>
 			//	self.
 			}
 		}
+
+		let mut enemyInd = 3527389;
 		
-		for act in &mut self.m_game_objects{
-			self.m_controllers[0].think(act, &self.m_player.m_actor);
+		//search a suitable opponent
+		for i in 0..self.m_game_objects.len(){
+			let dist_to_player = (self.m_player.m_actor.m_sprite.m_location - self.m_game_objects[i].m_sprite.m_location).len();
+			if dist_to_player < 1000.0 && self.m_game_objects[i].m_is_hostile{
+				enemyInd = i;
+				break;
+			}
+		}
+		
+		for i in 0..self.m_game_objects.len(){
+			if(self.m_game_objects[i].m_is_hostile){
+				self.m_controllers[0].think(&mut self.m_game_objects[i], &self.m_player.m_actor);
+			} else {
+				if enemyInd != 3527389
+				{
+					if(i < enemyInd){
+						let (a,b) = self.m_game_objects.split_at_mut(enemyInd);
+						self.m_controllers[1].think(&mut (a[i]), &mut(b[0]));
+					} else{
+						let (a,b) = self.m_game_objects.split_at_mut(i);
+						self.m_controllers[1].think(&mut (b[0]), &mut(a[enemyInd]));
+					
+					}
+				}
+			}
+		}
+		
+		// spawn a golem when a building is finished
+		for building in &self.m_buildings {
+			if let Some(b) = building.as_ref() {
+				if b.is_completed(){
+					self.m_game_objects.push(actor::Actor::new_h( b.m_sprite.m_location, &self.m_spawners[0].m_actor_builder.m_texture, 50.0, &self.m_spawners[0].m_actor_builder.m_projectile_builder, 3.0, false));
+				}
+			}
 		}
 		
 		//remove all finished objects in the world
