@@ -26,7 +26,7 @@ impl<'a> Player<'a> {
 		}
 		
 		Player {
-			m_actor: actor::Actor::new(_vec, _texture, 200.0, _proj_builder),
+			m_actor: actor::Actor::new(_vec, _texture, 200.0, _proj_builder, 0.75),
 			m_orb_sprites: orb_sprites,
 			m_construction_progress: 0.0,
 			m_inventory: [0; 3],

@@ -50,9 +50,9 @@ impl Vector {
 	}
 	
 	//rotates the vector around the given angle
-	pub fn rotate(&mut self, _angle: f32){
+	pub fn rotate(&mut self, _angle: f32, _offset : f32){
 
-		let angle_rad = (_angle - 45.0) * f32::consts::PI / 180.0;
+		let angle_rad = (_angle - _offset) * f32::consts::PI / 180.0;
         let cos_a = f32::cos(angle_rad);
         let sin_a = f32::sin(angle_rad);
 		

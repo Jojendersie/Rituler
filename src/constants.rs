@@ -31,3 +31,4 @@ pub const TEX_FIRST_STUFF : i32 = 9;
 	pub const TEX_SOUL0_R : usize = 13;
 	pub const TEX_SOUL1_R : usize = 14;
 	pub const TEX_SOUL2_R : usize = 15;
+	pub const TEX_NONE : usize = 16;

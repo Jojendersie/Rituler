@@ -9,6 +9,8 @@ use sdl2::rect::{Point};
 use constants::*;
 use player;
 use orb;
+use controller;
+use spawner;
 use building;
 
 pub struct World<'a>
@@ -21,6 +23,8 @@ pub struct World<'a>
 	pub m_orbs : Vec< orb::Orb<'a> >,
 	pub m_textures : Vec< &'a sdl2::render::Texture >,
 	pub m_buildings : Vec< Option<building::Building<'a>> >,
+	pub m_controllers : Vec< controller::Controller >,
+	pub m_spawners : Vec< spawner::Spawner<'a> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -61,7 +65,10 @@ impl <'a> actor::Dynamic for World<'a>
 			
 			if act.m_wants_to_attack && act.m_cool_down <= 0.0 {
 				act.m_cool_down = act.m_cool_down_max;
-				self.m_projectiles.push(act.m_projectile_builder.create_projectile(act.m_sprite.m_location, math::Vector{x: 10.0, y: 10.0}));
+				let mut dir = math::Vector{x:-1.0, y: 0.0};
+				dir.rotate(act.m_sprite.m_angle, 90.0);
+				let loc = act.m_sprite.m_location + dir * (act.m_sprite.m_sprite_size.0 as f32) * 0.46;
+				self.m_projectiles.push(act.m_projectile_builder.create_projectile(loc, dir));
 			}
 		}
 		
@@ -74,8 +81,8 @@ impl <'a> actor::Dynamic for World<'a>
 			if player_act.m_wants_to_attack && player_act.m_cool_down <= 0.0 {
 				player_act.m_cool_down = player_act.m_cool_down_max;
 				let mut dir = math::Vector{x:1.0, y: 0.0};
-				dir.rotate(player_act.m_sprite.m_angle);
-				self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location, dir));
+				dir.rotate(player_act.m_sprite.m_angle, 45.0);
+				self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location + dir * 80.0, dir));
 			}
 		}
 		
@@ -95,8 +102,8 @@ impl <'a> actor::Dynamic for World<'a>
 		}
 		
 		//collision of projectiles
-		for act in &mut self.m_game_objects {
-			for proj in &mut self.m_projectiles {
+		for proj in &mut self.m_projectiles {
+			for act in &mut self.m_game_objects {
 				if (act.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.45 * (act.m_sprite.m_sprite_size.0 as f32){
 					proj.m_is_finished = true;
 					act.m_life -= proj.m_damage;
@@ -107,9 +114,32 @@ impl <'a> actor::Dynamic for World<'a>
 					}
 				}
 			}
+			//player with smaller collision box
+			if (self.m_player.m_actor.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.35 * (self.m_player.m_actor.m_sprite.m_sprite_size.0 as f32){
+					proj.m_is_finished = true;
+					self.m_player.m_actor.m_life -= proj.m_damage;
+					if self.m_player.m_actor.m_life <= 0.0 {
+						println!("Game Over!");
+					}
+			}
+		}
+
+		// spawner
+		for spawner in &mut self.m_spawners{
+			spawner.process();
+
+			if spawner.m_wants_to_spawn{
+				self.m_game_objects.push(actor::Actor::new( spawner.m_location, &spawner.m_actor_builder.m_texture, 50.0, &spawner.m_actor_builder.m_projectile_builder, 1.0));
+				spawner.m_wants_to_spawn = false;
+			//	self.
+			}
 		}
 		
-		//remove all finished projectiles
+		for act in &mut self.m_game_objects{
+			self.m_controllers[0].think(act, &self.m_player);
+		}
+		
+		//remove all finished objects in the world
 		self.m_projectiles.retain(|x| !x.m_is_finished);
 		self.m_orbs.retain(|x| x.m_quality >= 0);
 		self.m_game_objects.retain(|x| x.m_life > 0.0);
@@ -149,6 +179,8 @@ impl<'a> World<'a>{
 			m_projectiles: Vec::new(),
 			m_orbs: Vec::new(),
 			m_buildings: buildings,
+			m_spawners : Vec::new(),
+			m_controllers : Vec::new(),
 		}
 	}
 	
