@@ -42,8 +42,8 @@ impl <'a> drawable::Drawable for Projectile<'a>
 		
 		_renderer.set_draw_color(pixels::Color::RGB(95,54,228));
 		
-		let max = if self.m_life_time < 48 {
-			self.m_life_time / 2
+		let max = if self.m_life_time > 276 {
+			300 - self.m_life_time
 		} else{
 			24
 		};
