@@ -54,8 +54,10 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/grass.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/sand.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/golem_altar.png")).unwrap());
+	// Projectiles
+	textures.push(renderer.load_texture(&Path::new("img/projectile.png")).unwrap());
 	//test
-	let default_builder = projectile::ProjectileBuilder{m_texture: &textures[0], m_speed: 4.0, m_damage: 10};
+	let default_builder = projectile::ProjectileBuilder{m_texture: &textures[5], m_speed: 4.0, m_damage: 10};
 	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0], &default_builder);
 	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0, &default_builder);
 	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]], player);
