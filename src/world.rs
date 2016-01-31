@@ -8,6 +8,7 @@ use projectile;
 use sdl2::rect::{Point};
 use constants::*;
 use player;
+use orb;
 
 pub struct World<'a>
 {
@@ -17,6 +18,8 @@ pub struct World<'a>
 	pub m_game_objects : Vec< actor::Actor<'a> >,
 	pub m_ground_textures : Vec < &'a sdl2::render::Texture >,
 	pub m_projectiles : Vec< projectile::Projectile<'a> >,
+	pub m_orbs : Vec< orb::Orb<'a> >,
+	pub m_orb_textures : Vec< &'a sdl2::render::Texture >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -28,6 +31,10 @@ impl <'a> drawable::Drawable for World<'a>
 		
 		for proj in &self.m_projectiles{
 			(proj as &drawable::Drawable).draw(_renderer, &_cam_pos);
+		}
+		
+		for orb in &self.m_orbs {
+			(orb as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
 		for act in &self.m_game_objects{
@@ -68,18 +75,28 @@ impl <'a> actor::Dynamic for World<'a>
 			(proj as &mut actor::Dynamic).process();
 		}
 		
+		// Process orbs
+		for orb in &mut self.m_orbs {
+			(orb as &mut actor::Dynamic).process();
+			// TODO: check collision with player
+		}
+		
 		//collision of projectiles
 		for act in &mut self.m_game_objects {
 			for proj in &mut self.m_projectiles {
 				if (act.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.45 * (act.m_sprite.m_sprite_size.0 as f32){
 					proj.m_is_finished = true;
 					act.m_life -= proj.m_damage;
+					if act.m_life <= 0.0 {
+						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, self.m_orb_textures[0], 0));
+					}
 				}
 			}
 		}
 		
 		//remove all finished projectiles
 		self.m_projectiles.retain(|x| !x.m_is_finished);
+		self.m_game_objects.retain(|x| x.m_life > 0.0);
 	}
 }
 
@@ -98,7 +115,7 @@ impl<'a> World<'a>{
 	
 	
 	//constructs a world with the given ground textures
-	pub fn new(mut _ground_textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
+	pub fn new(mut _ground_textures : Vec < &'a sdl2::render::Texture >, mut _orb_textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
 		let mut ground_tiles = Vec::new();
 		let mut ground_tile_ids = Vec::new();
 		for x in 0..MAP_NUM_TILES_X {
@@ -116,6 +133,8 @@ impl<'a> World<'a>{
 			m_game_objects: Vec::new(),
 			m_ground_textures: _ground_textures,
 			m_projectiles: Vec::new(),
+			m_orbs: Vec::new(),
+			m_orb_textures: _orb_textures,
 		}
 	}
 	
@@ -137,5 +156,9 @@ impl<'a> World<'a>{
 			self.m_ground_tile_ids[index] = _tile;
 			self.m_ground_tiles[index] = drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, self.m_ground_textures[_tile as usize]);
 		}
+	}
+	
+	fn spawn_soul(&mut self, _actor : &actor::Actor) {
+		self.m_orbs.push(orb::Orb::new(_actor.m_sprite.m_location, self.m_orb_textures[0], 0));
 	}
 }

@@ -11,6 +11,7 @@ mod world;
 mod playerinput;
 mod projectile;
 mod player;
+mod orb;
 
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
@@ -56,11 +57,15 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/golem_altar.png")).unwrap());
 	// Projectiles
 	textures.push(renderer.load_texture(&Path::new("img/projectile.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/broken_soul.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/weak_soul.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/strong_soul.png")).unwrap());
 	//test
 	let default_builder = projectile::ProjectileBuilder{m_texture: &textures[5], m_speed: 4.0, m_damage: 10.0};
 	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0], &default_builder);
 	let actor2 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0, &default_builder);
-	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]], player);
+	let mut world = world::World::new(vec![&textures[2], &textures[3], &textures[4]],
+									  vec![&textures[6], &textures[7], &textures[8]], player);
 	//world.set_player(player);
 	world.add_actor(actor2);
 	
