@@ -9,6 +9,8 @@ use sdl2::rect::{Point};
 use constants::*;
 use player;
 use orb;
+use controller;
+use spawner;
 
 pub struct World<'a>
 {
@@ -20,6 +22,8 @@ pub struct World<'a>
 	pub m_projectiles : Vec< projectile::Projectile<'a> >,
 	pub m_orbs : Vec< orb::Orb<'a> >,
 	pub m_orb_textures : Vec< &'a sdl2::render::Texture >,
+	pub m_controllers : Vec< controller::Controller >,
+	pub m_spawners : Vec< spawner::Spawner<'a> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -100,8 +104,23 @@ impl <'a> actor::Dynamic for World<'a>
 				}
 			}
 		}
+
+		// spawner
+		for spawner in &mut self.m_spawners{
+			spawner.process();
+
+			if spawner.m_wants_to_spawn{
+				self.m_game_objects.push(actor::Actor::new( spawner.m_location, &spawner.m_actor_builder.m_texture, 50.0, &spawner.m_actor_builder.m_projectile_builder, 1.0));
+				spawner.m_wants_to_spawn = false;
+			//	self.
+			}
+		}
 		
-		//remove all finished projectiles
+		for act in &mut self.m_game_objects{
+			self.m_controllers[0].think(act, &self.m_player);
+		}
+		
+		//remove all finished objects in the world
 		self.m_projectiles.retain(|x| !x.m_is_finished);
 		self.m_orbs.retain(|x| x.m_quality >= 0);
 		self.m_game_objects.retain(|x| x.m_life > 0.0);
@@ -143,6 +162,8 @@ impl<'a> World<'a>{
 			m_projectiles: Vec::new(),
 			m_orbs: Vec::new(),
 			m_orb_textures: _orb_textures,
+			m_spawners : Vec::new(),
+			m_controllers : Vec::new(),
 		}
 	}
 	

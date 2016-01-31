@@ -19,14 +19,14 @@ pub struct Actor<'a> {
 }
 
 impl<'a> Actor<'a> {
-	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _max_life: f32, _proj_builder: &'a projectile::ProjectileBuilder) -> Actor<'a> {
+	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _max_life: f32, _proj_builder: &'a projectile::ProjectileBuilder, _cool_down: f32) -> Actor<'a> {
 		Actor {
 			m_sprite: drawable::Sprite::new(_vec, _texture),
 			m_life: _max_life,
 			m_max_life: _max_life,
 			m_wants_to_attack : false,
-			m_cool_down : 0.75,
-			m_cool_down_max : 0.75,
+			m_cool_down : _cool_down,
+			m_cool_down_max : _cool_down,
 			m_projectile_builder : _proj_builder,
 		}
 	}
