@@ -20,6 +20,7 @@ use constants::*;
 use sdl2::pixels;
 
 static mut running: bool = true;
+static mut left_mouse_down: bool = false;
 
 fn handle_event(event: sdl2::event::Event) {
 	use sdl2::event::Event;
@@ -27,6 +28,9 @@ fn handle_event(event: sdl2::event::Event) {
 	match event {
 		Event::Quit {..} | Event::KeyDown { keycode: Some(Keycode::Escape), .. } => unsafe {
 				running = false;
+		},
+		Event::MouseButtonDown {mouse_btn: sdl2::mouse::Mouse::Left, ..} => unsafe {
+			left_mouse_down = true;
 		},
 		_ => {
 		}
@@ -64,10 +68,11 @@ fn main() {
 		let mut event_pump = sdl_context.event_pump().unwrap();
 		
 		// Handle all sdl events.
+		unsafe{left_mouse_down = false;}
 		for event in event_pump.poll_iter() {
 			handle_event(event);
 		}
-		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world);
+		playerinput::handle_player_input(&sdl_context, &event_pump.keyboard_state(), &mut world, unsafe{left_mouse_down});
 		
 		// The camera is always attached to the player which is entity 0
 		{
