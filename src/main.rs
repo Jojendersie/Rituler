@@ -82,7 +82,7 @@ fn main() {
 	let actor_builder = spawner::ActorBuilder::new(&textures[2], 50.0, &mob_proj_builder, 1.5);
 	world.m_spawners.push(spawner::Spawner{m_actor_builder : actor_builder, m_location: math::Vector{x : 0.0, y : 0.0}, m_cool_down: 2, m_cool_down_max: 240, m_wants_to_spawn : false});
 	//the ai
-	let controller = controller::Controller{m_speed : 4.0};
+	let controller = controller::Controller{m_speed : 4.0, m_prefered_dist : 144.0};
 	world.m_controllers.push(controller);
 //	world.add_building(test_build);
 	

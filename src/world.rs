@@ -136,7 +136,7 @@ impl <'a> actor::Dynamic for World<'a>
 		}
 		
 		for act in &mut self.m_game_objects{
-			self.m_controllers[0].think(act, &self.m_player);
+			self.m_controllers[0].think(act, &self.m_player.m_actor);
 		}
 		
 		//remove all finished objects in the world
