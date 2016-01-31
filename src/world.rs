@@ -178,11 +178,16 @@ impl <'a> actor::Dynamic for World<'a>
 		}
 		
 		// spawn a golem when a building is finished
-		for building in &self.m_buildings {
-			if let Some(b) = building.as_ref() {
+		for i in 0..self.m_buildings.len() {
+			let mut set_to_none = false;
+			if let Some(b) = self.m_buildings[i].as_ref() {
 				if b.is_completed(){
 					self.m_game_objects.push(actor::Actor::new_h( b.m_sprite.m_location, &self.m_spawners[0].m_actor_builder.m_texture, 50.0, &self.m_spawners[0].m_actor_builder.m_projectile_builder, 3.0, false));
+					set_to_none = true;
 				}
+			}
+			if set_to_none {
+				self.m_buildings[i] = None;
 			}
 		}
 		
