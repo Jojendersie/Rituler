@@ -17,11 +17,10 @@ pub struct World<'a>
 	pub m_ground_tiles : Vec< drawable::Sprite<'a> >,
 	pub m_ground_tile_ids : Vec< i32 >,
 	pub m_game_objects : Vec< actor::Actor<'a> >,
-	pub m_ground_textures : Vec < &'a sdl2::render::Texture >,
 	pub m_projectiles : Vec< projectile::Projectile<'a> >,
 	pub m_orbs : Vec< orb::Orb<'a> >,
-	pub m_orb_textures : Vec< &'a sdl2::render::Texture >,
-	pub m_buildings : Vec< building::Building<'a> >,
+	pub m_textures : Vec< &'a sdl2::render::Texture >,
+	pub m_buildings : Vec< Option<building::Building<'a>> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -31,8 +30,10 @@ impl <'a> drawable::Drawable for World<'a>
 			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
 		}
 		
-		for building in &self.m_buildings{
-			building.draw(_renderer, &_cam_pos);
+		for building in &self.m_buildings {
+			if let Some(b) = building.as_ref() {
+				b.draw(_renderer, &_cam_pos);
+			}
 		}
 		
 		for proj in &self.m_projectiles{
@@ -101,7 +102,8 @@ impl <'a> actor::Dynamic for World<'a>
 					act.m_life -= proj.m_damage;
 					if act.m_life <= 0.0 {
 						let id: i32 = 2 / (1 + math::get_rand(6));
-						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, self.m_orb_textures[id as usize], id));
+						let tex = &self.m_textures[(id + TEX_SOUL0 as i32) as usize];
+						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, tex, id));
 					}
 				}
 			}
@@ -123,24 +125,18 @@ impl<'a> World<'a>{
 		self.m_game_objects.push(_actor);
 	}
 	
-	pub fn add_building(&mut self, _building : building::Building<'a>){
-		self.m_buildings.push(_building);
-	}
-	
-	/*pub fn spawn_projectile(&mut self, _projectile: projectile::Projectile<'a>){
-		self.m_projectiles.push(_projectile);
-	}*/
-	
 	
 	//constructs a world with the given ground textures
-	pub fn new(mut _ground_textures : Vec < &'a sdl2::render::Texture >, mut _orb_textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
+	pub fn new(mut _textures : Vec < &'a sdl2::render::Texture >, _player : player::Player<'a>) -> World<'a> {
 		let mut ground_tiles = Vec::new();
 		let mut ground_tile_ids = Vec::new();
+		let mut buildings = Vec::new();
 		for x in 0..MAP_NUM_TILES_X {
 			for y in 0..MAP_NUM_TILES_Y {
 				let id: i32 = math::get_rand(1);
-				ground_tiles.push(drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _ground_textures[id as usize]));
+				ground_tiles.push(drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, _textures[(id + TEX_FIRST_GROUND) as usize]));
 				ground_tile_ids.push(id);
+				buildings.push(None);
 			}
 		}
 		
@@ -149,11 +145,10 @@ impl<'a> World<'a>{
 			m_ground_tiles: ground_tiles,
 			m_ground_tile_ids: ground_tile_ids,
 			m_game_objects: Vec::new(),
-			m_ground_textures: _ground_textures,
+			m_textures: _textures,
 			m_projectiles: Vec::new(),
 			m_orbs: Vec::new(),
-			m_orb_textures: _orb_textures,
-			m_buildings: Vec::new(),
+			m_buildings: buildings,
 		}
 	}
 	
@@ -167,13 +162,27 @@ impl<'a> World<'a>{
 		}
 	}
 	
-	pub fn set_tile(&mut self, _pos : math::Vector, _tile : i32) {
+	pub fn add_building(&mut self, _pos : math::Vector) {
+		let pos = math::Vector{x: f32::floor((_pos.x + 175.0) / 350.0) * 350.0,
+							   y: f32::floor((_pos.y + 175.0) / 350.0) * 350.0};
+		let build = building::Building::new(pos, &self.m_textures[TEX_GOLEM_ALTAR], [5,3,6],
+											&vec![&self.m_textures[TEX_SOUL0], &self.m_textures[TEX_SOUL1], &self.m_textures[TEX_SOUL2]],
+											&vec![&self.m_textures[TEX_SOUL0_R], &self.m_textures[TEX_SOUL1_R], &self.m_textures[TEX_SOUL2_R]]);
+		let x = f32::floor((pos.x + 175.0) / 350.0) as i32;
+		let y = f32::floor((pos.y + 175.0) / 350.0) as i32;
+		if x >= 0 && y >= 0 && x < MAP_NUM_TILES_X && y < MAP_NUM_TILES_Y {
+			let index = (x * MAP_NUM_TILES_Y + y) as usize;
+			self.m_buildings[index] = Some(build);
+		}
+	}
+	
+	pub fn get_building(&self, _pos : math::Vector) -> Option<&building::Building> {
 		let x = f32::floor((_pos.x + 175.0) / 350.0) as i32;
 		let y = f32::floor((_pos.y + 175.0) / 350.0) as i32;
 		if x >= 0 && y >= 0 && x < MAP_NUM_TILES_X && y < MAP_NUM_TILES_Y {
-			let index = (x * MAP_NUM_TILES_Y + y) as usize;
-			self.m_ground_tile_ids[index] = _tile;
-			self.m_ground_tiles[index] = drawable::Sprite::new( math::Vector{x : (x as f32) * 350.0, y : (y as f32) * 350.0}, self.m_ground_textures[_tile as usize]);
+			self.m_buildings[(x * MAP_NUM_TILES_Y + y) as usize].as_ref()
+		} else {
+			None
 		}
 	}
 }

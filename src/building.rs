@@ -52,7 +52,7 @@ impl<'a> Building<'a> {
 			m_sprite : drawable::Sprite::new(_vec, _texture),
 			m_orb_sprites : orb_sprites,
 			m_req_orb_sprites : req_orb_sprites,
-			m_resources : [2,1,3],
+			m_resources : [0; 3],
 			m_req_resources : _req_resources,
 		}
 	}

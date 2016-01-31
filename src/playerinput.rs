@@ -13,11 +13,11 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 	if _keyboard.is_scancode_pressed(Scancode::Space) {
 		// Check if the underlying map type is correct
 		let tile_id = _world.get_tile(player_pos);
-		if tile_id == 1 {
+		if tile_id == 1 && _world.get_building(player_pos).is_none() {
 			constructing = true;
 			_world.m_player.m_construction_progress += 0.01;
 			if _world.m_player.m_construction_progress >= 1.0 {
-				_world.set_tile(player_pos, 2);
+				_world.add_building(player_pos);
 				_world.m_player.m_construction_progress = 0.0;
 			}
 		}
