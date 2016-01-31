@@ -68,10 +68,10 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/strong_soul.png")).unwrap());
 	//test
 	let default_builder = projectile::ProjectileBuilder{m_texture: &textures[9], m_speed: 8.0, m_damage: 10.0};
-	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0], &default_builder);
-//	let actor0 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0, &default_builder);
-//	let actor1 = actor::Actor::new( math::Vector{x : 200.0, y : 0.0}, &textures[2], 20.0, &default_builder);
-//	let actor2 = actor::Actor::new( math::Vector{x : 400.0, y : 0.0}, &textures[3], 30.0, &default_builder);
+	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0], &default_builder,
+											vec![&textures[10], &textures[11], &textures[12]]);
+
+	
 	let mut world = world::World::new(vec![&textures[6], &textures[7], &textures[8]],
 									  vec![&textures[10], &textures[11], &textures[12]], player);
 									  
@@ -81,9 +81,6 @@ fn main() {
 	//the ai
 	let controller = controller::Controller{m_speed : 4.0};
 	world.m_controllers.push(controller);
-//	world.add_actor(actor0);
-//	world.add_actor(actor1);
-//	world.add_actor(actor2);
 	
 	while unsafe{running} {
 		let mut time = time::precise_time_ns();
