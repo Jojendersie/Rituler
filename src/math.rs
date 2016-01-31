@@ -52,13 +52,13 @@ impl Vector {
 	//rotates the vector around the given angle
 	pub fn rotate(&mut self, _angle: f32){
 
-		let angleRad = (_angle - 45.0) * f32::consts::PI / 180.0;
-        let cosA = f32::cos(angleRad);
-        let sinA = f32::sin(angleRad);
+		let angle_rad = (_angle - 45.0) * f32::consts::PI / 180.0;
+        let cos_a = f32::cos(angle_rad);
+        let sin_a = f32::sin(angle_rad);
 		
-		let oldX = self.x;
-        self.x = self.x * cosA - self.y * sinA;
-        self.y = self.y * cosA + oldX * sinA;
+		let old_x = self.x;
+        self.x = self.x * cos_a - self.y * sin_a;
+        self.y = self.y * cos_a + old_x * sin_a;
     }
 	
 	pub fn len(&self) -> f32{

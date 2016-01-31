@@ -14,9 +14,9 @@ pub struct Player<'a> {
 }
 
 impl<'a> Player<'a> {
-	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _projBuilder : &'a projectile::ProjectileBuilder<'a> ) -> Player<'a> {
+	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _proj_builder : &'a projectile::ProjectileBuilder<'a> ) -> Player<'a> {
 		Player {
-			m_actor: actor::Actor::new(_vec, _texture, 200.0, _projBuilder),
+			m_actor: actor::Actor::new(_vec, _texture, 200.0, _proj_builder),
 			m_construction_progress: 0.0,
 		}
 	}

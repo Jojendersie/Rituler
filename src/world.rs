@@ -43,10 +43,10 @@ impl <'a> actor::Dynamic for World<'a>
 	fn process(&mut self)
 	{
 		for act in &mut self.m_game_objects{
-			act.m_coolDown -= 0.016667;
+			act.m_cool_down -= 0.016667;
 			
-			if(act.m_wants_to_attack && act.m_coolDown <= 0.0){
-				act.m_coolDown = act.m_coolDownMax;
+			if act.m_wants_to_attack && act.m_cool_down <= 0.0 {
+				act.m_cool_down = act.m_cool_down_max;
 				self.m_projectiles.push(act.m_projectile_builder.create_projectile(act.m_sprite.m_location, math::Vector{x: 10.0, y: 10.0}));
 			}
 		}
@@ -54,10 +54,10 @@ impl <'a> actor::Dynamic for World<'a>
 		
 		//player is handled extra
 		let player_act = &mut self.m_player.m_actor;
-		player_act.m_coolDown -= 0.016667;
+		player_act.m_cool_down -= 0.016667;
 			
-		if(player_act.m_wants_to_attack && player_act.m_coolDown <= 0.0){
-			player_act.m_coolDown = player_act.m_coolDownMax;
+		if player_act.m_wants_to_attack && player_act.m_cool_down <= 0.0 {
+			player_act.m_cool_down = player_act.m_cool_down_max;
 			let mut dir = math::Vector{x:1.0, y: 0.0};
 			dir.rotate(player_act.m_sprite.m_angle);
 			self.m_projectiles.push(player_act.m_projectile_builder.create_projectile(player_act.m_sprite.m_location, dir));
@@ -91,9 +91,9 @@ impl<'a> World<'a>{
 		self.m_game_objects.push(_actor);
 	}
 	
-	pub fn spawn_projectile(&mut self, _projectile: projectile::Projectile<'a>){
+	/*pub fn spawn_projectile(&mut self, _projectile: projectile::Projectile<'a>){
 		self.m_projectiles.push(_projectile);
-	}
+	}*/
 	
 	
 	//constructs a world with the given ground textures

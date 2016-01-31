@@ -12,8 +12,8 @@ pub struct Actor<'a> {
 	pub m_life : f32,
 	pub m_max_life : f32,
 	pub m_wants_to_attack : bool,
-	pub m_coolDown : f32,
-	pub m_coolDownMax : f32,
+	pub m_cool_down : f32,
+	pub m_cool_down_max : f32,
 	pub m_projectile_builder : &'a projectile::ProjectileBuilder<'a>,
 }
 
@@ -24,8 +24,8 @@ impl<'a> Actor<'a> {
 			m_life: _max_life,
 			m_max_life: _max_life,
 			m_wants_to_attack : false,
-			m_coolDown : 2.0,
-			m_coolDownMax : 2.0,
+			m_cool_down : 2.0,
+			m_cool_down_max : 2.0,
 			m_projectile_builder : _proj_builder,
 		}
 	}
