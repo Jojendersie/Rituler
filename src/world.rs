@@ -108,7 +108,7 @@ impl <'a> actor::Dynamic for World<'a>
 					proj.m_is_finished = true;
 					act.m_life -= proj.m_damage;
 					if act.m_life <= 0.0 {
-						let id: i32 = 2 / (1 + math::get_rand(6));
+						let id: i32 = 2 / (1 + math::get_rand(4));
 						let tex = &self.m_textures[(id + TEX_SOUL0 as i32) as usize];
 						self.m_orbs.push(orb::Orb::new(act.m_sprite.m_location, tex, id));
 					}
@@ -197,7 +197,7 @@ impl<'a> World<'a>{
 	pub fn add_building(&mut self, _pos : math::Vector) {
 		let pos = math::Vector{x: f32::floor((_pos.x + 175.0) / 350.0) * 350.0,
 							   y: f32::floor((_pos.y + 175.0) / 350.0) * 350.0};
-		let build = building::Building::new(pos, &self.m_textures[TEX_GOLEM_ALTAR], [5,3,6],
+		let build = building::Building::new(pos, &self.m_textures[TEX_GOLEM_ALTAR], [4,2,1],
 											&vec![&self.m_textures[TEX_SOUL0], &self.m_textures[TEX_SOUL1], &self.m_textures[TEX_SOUL2]],
 											&vec![&self.m_textures[TEX_SOUL0_R], &self.m_textures[TEX_SOUL1_R], &self.m_textures[TEX_SOUL2_R]]);
 		let x = f32::floor((pos.x + 175.0) / 350.0) as i32;
