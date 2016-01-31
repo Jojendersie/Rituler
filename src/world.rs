@@ -69,10 +69,11 @@ impl <'a> actor::Dynamic for World<'a>
 		}
 		
 		//collision of projectiles
-		for act in &self.m_game_objects{
-			for proj in &mut self.m_projectiles{
+		for act in &mut self.m_game_objects {
+			for proj in &mut self.m_projectiles {
 				if (act.m_sprite.m_location - proj.m_sprite.m_location).len() < 0.45 * (act.m_sprite.m_sprite_size.0 as f32){
 					proj.m_is_finished = true;
+					act.m_life -= proj.m_damage;
 				}
 			}
 		}

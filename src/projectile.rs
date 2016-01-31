@@ -10,13 +10,13 @@ use actor;
 pub struct ProjectileBuilder<'a>{
 	pub m_texture : &'a sdl2::render::Texture,
 	pub m_speed : f32,
-	pub m_damage : i32,
+	pub m_damage : f32,
 }
 
 impl <'a> ProjectileBuilder<'a>{
 	pub fn create_projectile(&self, _loc : math::Vector, mut _dir : math::Vector) -> Projectile{
 		_dir.normalize();
-		Projectile::new(_loc, self.m_texture, _dir * self.m_speed)
+		Projectile::new(_loc, self.m_texture, _dir * self.m_speed, self.m_damage)
 	}
 }
 
@@ -26,6 +26,7 @@ pub struct Projectile<'a> {
 	pub m_sprite : drawable::Sprite<'a>,
 	pub m_velocity : math::Vector,
 	pub m_is_finished : bool,
+	pub m_damage : f32,
 }
 
 impl <'a> drawable::Drawable for Projectile<'a>
@@ -39,11 +40,12 @@ impl <'a> drawable::Drawable for Projectile<'a>
 
 //constructor
 impl<'a> Projectile<'a> {
-	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _vel : math::Vector) -> Projectile {
+	pub fn new(_vec: math::Vector, _texture: &sdl2::render::Texture, _vel : math::Vector, _damage : f32) -> Projectile {
 		Projectile{
 			m_sprite: drawable::Sprite::new(_vec, _texture),
 			m_velocity: _vel,
 			m_is_finished : false,
+			m_damage : _damage,
 		}
 	}
 }

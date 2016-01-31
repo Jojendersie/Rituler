@@ -5,6 +5,7 @@ use drawable;
 use sdl2::rect::{Point, Rect};
 use sdl2::pixels;
 use std::cmp::max;
+use std::f32;
 use projectile;
 
 pub struct Actor<'a> {
@@ -24,8 +25,8 @@ impl<'a> Actor<'a> {
 			m_life: _max_life,
 			m_max_life: _max_life,
 			m_wants_to_attack : false,
-			m_cool_down : 2.0,
-			m_cool_down_max : 2.0,
+			m_cool_down : 0.75,
+			m_cool_down_max : 0.75,
 			m_projectile_builder : _proj_builder,
 		}
 	}
@@ -41,9 +42,11 @@ impl <'a> drawable::Drawable for Actor<'a>
 		let ypos = self.m_sprite.m_location.y as i32 - _cam_pos.y() - max_size - 20;
 		_renderer.set_draw_color(pixels::Color::RGB(10,10,10));
 		_renderer.fill_rect(Rect::new(xpos, ypos, len as u32, 10).unwrap().unwrap());
-		let len = (self.m_life / 2.0) as i32;
-		_renderer.set_draw_color(pixels::Color::RGB(100,255,100));
-		_renderer.fill_rect(Rect::new(xpos, ypos, len as u32, 10).unwrap().unwrap());
+		let len = f32::max(self.m_life / 2.0, 0.0) as i32;
+		if len > 0 {
+			_renderer.set_draw_color(pixels::Color::RGB(100,255,100));
+			_renderer.fill_rect(Rect::new(xpos, ypos, len as u32, 10).unwrap().unwrap());
+		}
 		
 		(&self.m_sprite as &drawable::Drawable).draw(_renderer, _cam_pos);
 	}
