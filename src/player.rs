@@ -10,14 +10,24 @@ use projectile;
 
 pub struct Player<'a> {
 	pub m_actor : actor::Actor<'a>,
+	pub m_orbSprites : Vec< drawable::Sprite<'a> >,
 	pub m_construction_progress : f32,
 	pub m_inventory: [i32; 3], // A counter for every collectable: currently only orbs.
 }
 
 impl<'a> Player<'a> {
-	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _proj_builder : &'a projectile::ProjectileBuilder<'a> ) -> Player<'a> {
+	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _proj_builder : &'a projectile::ProjectileBuilder<'a>, mut _orb_textures : Vec < &'a sdl2::render::Texture >) -> Player<'a> {
+		let mut orb_sprites = Vec::new();
+		for id in 0.._orb_textures.len() {
+			let mut sprite = drawable::Sprite::new( math::Vector{x:0.0, y:0.0}, _orb_textures[id as usize]);
+			sprite.m_sprite_size.0 /= 3;
+			sprite.m_sprite_size.1 /= 3;
+			orb_sprites.push(sprite);
+		}
+		
 		Player {
 			m_actor: actor::Actor::new(_vec, _texture, 200.0, _proj_builder),
+			m_orbSprites: orb_sprites,
 			m_construction_progress: 0.0,
 			m_inventory: [0; 3],
 		}
@@ -27,15 +37,17 @@ impl<'a> Player<'a> {
 impl <'a> drawable::Drawable for Player<'a>
 {
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point) {
-		// Draw a life bar
-/*		let max_size = max(self.m_sprite.m_sprite_size.0/2, self.m_sprite.m_sprite_size.1/2) as i32;
-		let len = (self.m_max_life / 2.0) as i32;
-		let xpos = self.m_sprite.m_location.x as i32 - len/2 - _cam_pos.x();
-		let ypos = self.m_sprite.m_location.y as i32 - _cam_pos.y() - max_size - 20;
-		*/
+		// Draw inventory
+		for o in 0..3 {
+			for i in 1..(self.m_inventory[o]+1) {
+				let cam = Point::new(-30 - (o as i32) * 45, -WIN_HEIGHT + i * 50);
+				self.m_orbSprites[o].draw(_renderer, &cam);
+			}
+		}
 		
 		(&self.m_actor as &drawable::Drawable).draw(_renderer, _cam_pos);
 		
+		// While constructing stuff show a bar
 		if self.m_construction_progress > 0.0 {
 			_renderer.set_draw_color(pixels::Color::RGB(10,10,10));
 			_renderer.draw_rect(Rect::new(50, WIN_HEIGHT - 75, WIN_WIDTH as u32 - 100, 25).unwrap().unwrap());
