@@ -12,6 +12,7 @@ mod playerinput;
 mod projectile;
 mod player;
 mod orb;
+mod building;
 
 //use sdl2_image::{self, LoadTexture, INIT_PNG, INIT_JPG};
 use sdl2_image::LoadTexture;
@@ -64,6 +65,9 @@ fn main() {
 	textures.push(renderer.load_texture(&Path::new("img/broken_soul.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/weak_soul.png")).unwrap());
 	textures.push(renderer.load_texture(&Path::new("img/strong_soul.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/broken_soul_black.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/weak_soul_black.png")).unwrap());
+	textures.push(renderer.load_texture(&Path::new("img/strong_soul_black.png")).unwrap());
 	//test
 	let default_builder = projectile::ProjectileBuilder{m_texture: &textures[9], m_speed: 8.0, m_damage: 10.0};
 	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[0], &default_builder,
@@ -71,11 +75,13 @@ fn main() {
 	let actor0 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[1], 50.0, &default_builder);
 	let actor1 = actor::Actor::new( math::Vector{x : 200.0, y : 0.0}, &textures[2], 20.0, &default_builder);
 	let actor2 = actor::Actor::new( math::Vector{x : 400.0, y : 0.0}, &textures[3], 30.0, &default_builder);
+	let test_build = building::Building::new(math::Vector{x : 350.0, y : 350.0}, &textures[8], [5,3,6], &vec![&textures[10], &textures[11], &textures[12]], &vec![&textures[13], &textures[14], &textures[15]]);
 	let mut world = world::World::new(vec![&textures[6], &textures[7], &textures[8]],
 									  vec![&textures[10], &textures[11], &textures[12]], player);
 	world.add_actor(actor0);
 	world.add_actor(actor1);
 	world.add_actor(actor2);
+	world.add_building(test_build);
 	
 	while unsafe{running} {
 		let mut time = time::precise_time_ns();

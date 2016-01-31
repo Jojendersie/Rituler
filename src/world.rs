@@ -9,6 +9,7 @@ use sdl2::rect::{Point};
 use constants::*;
 use player;
 use orb;
+use building;
 
 pub struct World<'a>
 {
@@ -20,6 +21,7 @@ pub struct World<'a>
 	pub m_projectiles : Vec< projectile::Projectile<'a> >,
 	pub m_orbs : Vec< orb::Orb<'a> >,
 	pub m_orb_textures : Vec< &'a sdl2::render::Texture >,
+	pub m_buildings : Vec< building::Building<'a> >,
 }
 
 impl <'a> drawable::Drawable for World<'a>
@@ -27,6 +29,10 @@ impl <'a> drawable::Drawable for World<'a>
 	fn draw(&self, _renderer : &mut sdl2::render::Renderer, _cam_pos : &Point){
 		for act in &self.m_ground_tiles{
 			(act as &drawable::Drawable).draw(_renderer, &_cam_pos);
+		}
+		
+		for building in &self.m_buildings{
+			building.draw(_renderer, &_cam_pos);
 		}
 		
 		for proj in &self.m_projectiles{
@@ -117,6 +123,10 @@ impl<'a> World<'a>{
 		self.m_game_objects.push(_actor);
 	}
 	
+	pub fn add_building(&mut self, _building : building::Building<'a>){
+		self.m_buildings.push(_building);
+	}
+	
 	/*pub fn spawn_projectile(&mut self, _projectile: projectile::Projectile<'a>){
 		self.m_projectiles.push(_projectile);
 	}*/
@@ -143,6 +153,7 @@ impl<'a> World<'a>{
 			m_projectiles: Vec::new(),
 			m_orbs: Vec::new(),
 			m_orb_textures: _orb_textures,
+			m_buildings: Vec::new(),
 		}
 	}
 	
