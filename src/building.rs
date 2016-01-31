@@ -31,8 +31,8 @@ impl <'a> drawable::Drawable for Building<'a>
 	}
 }
 
-// Constructor
 impl<'a> Building<'a> {
+	// Constructor
 	pub fn new(_vec: math::Vector, _texture: &'a sdl2::render::Texture, _req_resources: [i32; 3],
 				_orb_textures : &Vec< &'a sdl2::render::Texture >,
 				_req_orb_textures : &Vec< &'a sdl2::render::Texture >) -> Building<'a> {
@@ -55,5 +55,14 @@ impl<'a> Building<'a> {
 			m_resources : [0; 3],
 			m_req_resources : _req_resources,
 		}
+	}
+	
+	pub fn is_completed(&self) -> bool {
+		for i in 0..3 {
+			if self.m_resources[i] < self.m_req_resources[i] {
+				return false
+			}
+		}
+		true
 	}
 }

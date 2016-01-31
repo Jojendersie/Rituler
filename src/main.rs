@@ -76,9 +76,6 @@ fn main() {
 	let mob_proj_builder = projectile::ProjectileBuilder{m_texture: &textures[TEX_NONE], m_speed: 8.0, m_damage: 20.0, m_life_time: 20};
 	let player = player::Player::new( math::Vector{x : 10.0, y : 10.0}, &textures[TEX_MAGE], &default_builder,
 		vec![&textures[TEX_SOUL0], &textures[TEX_SOUL1], &textures[TEX_SOUL2]]);
-/*	let actor0 = actor::Actor::new( math::Vector{x : 0.0, y : 0.0}, &textures[TEX_GOLEM], 50.0, &default_builder);
-	let actor1 = actor::Actor::new( math::Vector{x : 200.0, y : 0.0}, &textures[TEX_SPIDER1], 20.0, &default_builder);
-	let actor2 = actor::Actor::new( math::Vector{x : 400.0, y : 0.0}, &textures[TEX_SPIDER2], 30.0, &default_builder);*/
 	let mut world = world::World::new(vec![&textures[0], &textures[1], &textures[2], &textures[3], &textures[4], &textures[5], &textures[6], &textures[7], &textures[8], &textures[9], &textures[10], &textures[11], &textures[12], &textures[13], &textures[14], &textures[15]], player);
 									  
 	//spawners

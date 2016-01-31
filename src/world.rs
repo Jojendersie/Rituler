@@ -208,11 +208,11 @@ impl<'a> World<'a>{
 		}
 	}
 	
-	pub fn get_building(&self, _pos : math::Vector) -> Option<&building::Building> {
+	pub fn get_building(&mut self, _pos : math::Vector) -> Option<&mut building::Building<'a>> {
 		let x = f32::floor((_pos.x + 175.0) / 350.0) as i32;
 		let y = f32::floor((_pos.y + 175.0) / 350.0) as i32;
 		if x >= 0 && y >= 0 && x < MAP_NUM_TILES_X && y < MAP_NUM_TILES_Y {
-			self.m_buildings[(x * MAP_NUM_TILES_Y + y) as usize].as_ref()
+			self.m_buildings[(x * MAP_NUM_TILES_Y + y) as usize].as_mut()
 		} else {
 			None
 		}
