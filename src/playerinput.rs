@@ -20,9 +20,7 @@ pub fn handle_player_input(_sdl_context: &sdl2::Sdl, _keyboard: &sdl2::keyboard:
 			inventory[o] = _world.m_player.m_inventory[o];
 		}
 		{
-			let build = _world.get_building(player_pos);
-			if build.is_some() {
-				let b = build.unwrap();
+			if let Some(ref b) = world.get_building(player_pos) {
 				for o in 0..3 {
 					let num_souls = b.m_req_resources[o] - b.m_resources[o];
 					b.m_resources[o] += min(inventory[o], num_souls);
